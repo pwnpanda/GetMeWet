@@ -10,11 +10,17 @@ import java.sql.Date;
 public class Day {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private int id;
     private final Date date;
+    private final Integer day;
+    private final Integer month;
+    private final Integer year;
 
     public Day(Date date){
         this.date = date;
+        this.day = date.toLocalDate().getDayOfMonth();
+        this.month = date.toLocalDate().getMonthValue();
+        this.year = date.toLocalDate().getYear();
     }
 
     public Date getDate() {
@@ -26,14 +32,22 @@ public class Day {
     }
 
     public int getDayofMonth() {
-        return date.toLocalDate().getDayOfMonth();
+        return this.day;
     }
 
     public int getMonth() {
-        return date.toLocalDate().getMonthValue();
+        return this.month;
     }
 
     public int getYear() {
-        return date.toLocalDate().getYear();
+        return this.year;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 }

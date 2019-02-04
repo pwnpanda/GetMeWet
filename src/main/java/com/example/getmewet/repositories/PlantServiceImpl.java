@@ -3,27 +3,30 @@ package com.example.getmewet.repositories;
 import com.example.getmewet.models.Plant;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service("PlantService")
 public class PlantServiceImpl {
 
-    private static final AtomicLong counter = new AtomicLong();
+    private static final AtomicInteger counter = new AtomicInteger();
 
     private static List<Plant> plants;
 
+    /*
     static {
         plants = populate_plants();
-    }
+    }*/
 
 
     public List<Plant> getPlants() {
         return plants;
     }
 
-    public Plant findById(long id){
+    public Plant findById(int id){
         for (Plant plant: plants){
             if (plant.getId() == id){
                 return plant;
@@ -63,4 +66,10 @@ public class PlantServiceImpl {
         return findByName(plant.getName()) != null;
     }
 
+    /*
+    private static List<Plant> populate_Plants(){
+        List<Plant> plants = new ArrayList<Plant>();
+        plants.add(new Plant("TestPlant1", "NoPic"));
+        return plants;
+    }*/
 }

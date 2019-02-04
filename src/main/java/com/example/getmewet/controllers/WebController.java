@@ -52,6 +52,24 @@ public class WebController {
         return "status";
     }
 
+    // /addPlant adds another plant to the db (post info and user cred - API!)
+    @RequestMapping(value = "/addPlant", method = GET)
+    public String addPlant(){
+        return "addPlant";
+    }
+
+    // /removePlant removes the selected plant from the db (post id & user cred - API!)
+    @RequestMapping(value = "/removePlant", method = GET)
+    public String removePlant(){
+        return "removePlant";
+    }
+
+    // /updatePlant updates the selected plant (post info and user cred- API!)
+    @RequestMapping(value = "/updatePlant", method = GET)
+    public String updatePlant(){
+        return "updatePlant";
+    }
+
     // /logout logs out and returns to /
     @RequestMapping(value = "/logout", method = GET)
     public String logout(){

@@ -1,9 +1,8 @@
 package com.example.getmewet.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.hibernate.annotations.NaturalId;
+
+import javax.persistence.*;
 
 @Entity
 public class Status {
@@ -11,7 +10,9 @@ public class Status {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @ForeignKey
     private final Plant plant;
+    @ForeignKey
     private final Day day;
     private boolean isWet;
 

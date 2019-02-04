@@ -8,7 +8,7 @@ import java.util.List;
 public interface PlantService extends CrudRepository<Plant, Integer> {
 
     List<Plant> getPlants();
-    Plant findById(long id);
+    Plant findById(int id);
     Plant findByName(String name);
     boolean createPlant(Plant plant);
     boolean updatePlant(Plant plant);
