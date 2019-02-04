@@ -28,6 +28,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth
                 .inMemoryAuthentication()
                 .withUser("admin").password("admin").roles("ADMIN")
+                .and().withUser("user").password("user").roles("USER")
                 .and().withUser("user").password("user").roles("USER");;
     }
 */

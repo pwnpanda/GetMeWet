@@ -1,4 +1,5 @@
 Things to do before deploying:
+- Implement Security feature (login - https://www.baeldung.com/spring-security-login )
 - Setup application.properties correctly
     * spring.jpa.hibernate.ddl-auto=update
 - In mysql server:
