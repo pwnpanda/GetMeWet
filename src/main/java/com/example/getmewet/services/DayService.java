@@ -1,4 +1,4 @@
-package com.example.getmewet.repositories;
+package com.example.getmewet.services;
 
 import com.example.getmewet.models.Day;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service("DayService")
-public class DayServiceImpl {
+public class DayService {
 
     private static final AtomicInteger counter = new AtomicInteger();
 

@@ -1,4 +1,4 @@
-package com.example.getmewet.repositories;
+package com.example.getmewet.services;
 
 import com.example.getmewet.models.Plant;
 import org.springframework.stereotype.Service;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service("PlantService")
-public class PlantServiceImpl {
+public class PlantService {
 
     private static final AtomicInteger counter = new AtomicInteger();
 
@@ -20,7 +20,7 @@ public class PlantServiceImpl {
     }*/
 
 
-    public List<Plant> getPlants() {
+    public List<Plant> getAllBy() {
         return plants;
     }
 
@@ -65,25 +65,7 @@ public class PlantServiceImpl {
         return findById(id) != null;
     }
 
-    /*public void removePlant(Plant plant){
-        for (Iterator<Plant> iterator = plants.iterator(); iterator.hasNext();) {
-            Plant compare = iterator.next();
-            if (plant == compare) {
-                iterator.remove();
-            }
-        }
-    }
-
-    boolean isPlantExist(Plant plant){
-        return findByName(plant.getName()) != null;
-    }
-
-    Plant save(Plant plant){
-        if (plants.contains(plant)) updatePlant(plant);
-        else createPlant(plant);
-        return plant;
-    }
-
+    /*
 
     private static List<Plant> populate_Plants(){
         List<Plant> plants = new ArrayList<Plant>();

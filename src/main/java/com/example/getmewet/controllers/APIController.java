@@ -1,8 +1,8 @@
 /*package com.example.getmewet.controllers;
 
 import com.example.getmewet.models.Day;
-import com.example.getmewet.repositories.DayService;
-import com.example.getmewet.repositories.PlantService;
+import com.example.getmewet.repositories.DayRepository;
+import com.example.getmewet.repositories.PlantRepository;
 import com.example.getmewet.repositories.StatusService;
 import com.example.getmewet.util.CustomErrorType;
 import com.example.getmewet.models.Plant;
@@ -28,9 +28,9 @@ public class APIController {
     public int dayNr = LocalDateTime.now().getDayOfMonth();
 
     @Autowired
-    PlantService plantService;
+    PlantRepository plantService;
     @Autowired
-    DayService calendar;
+    DayRepository calendar;
     @Autowired
     StatusService getStatus;
 

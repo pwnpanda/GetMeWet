@@ -1,10 +1,13 @@
 /*package com.example.getmewet.models;
 
 import org.hibernate.annotations.NaturalId;
+import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
+@Data
+@Table(name = "Status")
 public class Status {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

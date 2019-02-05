@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Login Form</title>
     <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
@@ -29,6 +30,14 @@
             </tr>
         </table>
 
+    </form>
+
+    <form class="form-horizontal" th:action="@{/logout}" method="post">
+        <div class="col-sm-2" style="padding-top: 25px;">
+          <span sec:authorize="isAuthenticated()">
+              <input type="submit" value="Sign Out"/>
+           </span>
+        </div>
     </form>
 </div>
 </body>
