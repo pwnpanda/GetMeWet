@@ -1,4 +1,4 @@
-package com.example.getmewet.controllers;
+/*package com.example.getmewet.controllers;
 
 import com.example.getmewet.models.Day;
 import com.example.getmewet.repositories.DayService;
@@ -142,3 +142,4 @@ public class APIController {
         return new ResponseEntity<Boolean>(success, HttpStatus.OK);
     }
 }
+*/

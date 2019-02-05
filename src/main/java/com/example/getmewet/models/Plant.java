@@ -9,10 +9,10 @@ import javax.persistence.Id;
 public class Plant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private int id;
 
     private  final String name;
-    private final String picture;
+    private String picture;
     private String note;
 
     public Plant(String name, String picture){
@@ -21,11 +21,11 @@ public class Plant {
         note = "";
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -35,6 +35,10 @@ public class Plant {
 
     public String getPicture() {
         return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public String getNote() {
@@ -52,5 +56,10 @@ public class Plant {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    @Override
+    public String toString() {
+        return "Plant name: " + this.name + ", Note: " + this.note;
     }
 }

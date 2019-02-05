@@ -12,7 +12,9 @@ public interface PlantService extends CrudRepository<Plant, Integer> {
     Plant findByName(String name);
     void createPlant(Plant plant);
     void updatePlant(Plant plant);
-    void removePlant(Plant plant);
-    boolean isPlantExist(Plant plant);
+    //void removePlant(Plant plant);
+    void deletePlantById(int id);
+    boolean existsPlantById(int id);
+    //boolean isPlantExist(Plant plant);
 
 }

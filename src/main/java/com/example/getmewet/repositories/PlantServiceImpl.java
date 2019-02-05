@@ -3,11 +3,9 @@ package com.example.getmewet.repositories;
 import com.example.getmewet.models.Plant;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service("PlantService")
 public class PlantServiceImpl {
@@ -44,17 +42,17 @@ public class PlantServiceImpl {
         return null;
     }
 
-    void createPlant(Plant plant){
+    public void createPlant(Plant plant){
         plant.setId(counter.incrementAndGet());
         plants.add(plant);
     }
 
-    void updatePlant(Plant plant){
+    public void updatePlant(Plant plant){
         int index = plants.indexOf(plant);
         plants.set(index, plant);
     }
 
-    void removePlant(long id){
+    public void deletePlantById(int id){
         for (Iterator<Plant> iterator = plants.iterator(); iterator.hasNext();) {
             Plant plant = iterator.next();
             if (plant.getId() == id) {
@@ -62,11 +60,31 @@ public class PlantServiceImpl {
             }
         }
     }
+
+    boolean existsPlantById(int id){
+        return findById(id) != null;
+    }
+
+    /*public void removePlant(Plant plant){
+        for (Iterator<Plant> iterator = plants.iterator(); iterator.hasNext();) {
+            Plant compare = iterator.next();
+            if (plant == compare) {
+                iterator.remove();
+            }
+        }
+    }
+
     boolean isPlantExist(Plant plant){
         return findByName(plant.getName()) != null;
     }
 
-    /*
+    Plant save(Plant plant){
+        if (plants.contains(plant)) updatePlant(plant);
+        else createPlant(plant);
+        return plant;
+    }
+
+
     private static List<Plant> populate_Plants(){
         List<Plant> plants = new ArrayList<Plant>();
         plants.add(new Plant("TestPlant1", "NoPic"));

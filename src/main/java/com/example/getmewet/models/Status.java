@@ -1,4 +1,4 @@
-package com.example.getmewet.models;
+/*package com.example.getmewet.models;
 
 import org.hibernate.annotations.NaturalId;
 
@@ -43,3 +43,4 @@ public class Status {
         return super.equals(o);
     }
 }
+*/
