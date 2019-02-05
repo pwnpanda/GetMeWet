@@ -33,13 +33,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .authorizeRequests().antMatchers("/", "/console/**", "/registration").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin().loginPage("/login").permitAll()
+                .authorizeRequests().antMatchers("/", "/console/**", "/register").permitAll()
+                // TODO enable when not remaking db every time
+                //.antMatchers("/reqister").hasAuthority("ADMIN")
+                .anyRequest().authenticated().and().csrf().disable().formLogin()
+                .loginPage("/login").permitAll()
                 .defaultSuccessUrl("/today")
                 .and()
-                .logout().permitAll();
+                .logout().permitAll()
+                .logoutSuccessUrl("/").and().exceptionHandling()
+                .accessDeniedPage("/access-denied");
 
         httpSecurity.csrf().disable();
         httpSecurity.headers().frameOptions().disable();

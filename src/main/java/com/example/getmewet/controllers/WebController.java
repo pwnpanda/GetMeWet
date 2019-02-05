@@ -36,7 +36,7 @@ public class WebController {
         return "login";
     }
 
-    @RequestMapping(value="/registration", method = GET)
+    @RequestMapping(value="/register", method = GET)
     public ModelAndView registration(){
         ModelAndView modelAndView = new ModelAndView();
         User user = new User();
@@ -46,7 +46,7 @@ public class WebController {
     }
 
     // /reg.html post registers user
-    @RequestMapping(value = "/registration", method = POST)
+    @RequestMapping(value = "/register", method = POST)
     public ModelAndView getReg(@Valid User user, BindingResult bindingResult) {
         ModelAndView model = new ModelAndView();
         User us = userService.findByUsername(user.getUsername());
