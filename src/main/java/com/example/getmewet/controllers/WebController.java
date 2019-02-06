@@ -83,7 +83,7 @@ public class WebController {
         return "listplants";
     }
 
-    // /plants/{id} shows data about that plant
+    // /plants/{id} shows data about that plant - Allow for updating fields using API!
     @RequestMapping(value = "/webPlant", method = GET)
     public String getThisPlant() {
         // ???? TODO
@@ -99,19 +99,13 @@ public class WebController {
     // /addPlant adds another plant to the db (post info and user cred - API!)
     @RequestMapping(value = "/addPlant", method = GET)
     public String addPlant() {
-        return "addPlant";
+        return "addplant";
     }
 
     // /removePlant removes the selected plant from the db (post id & user cred - API!)
     @RequestMapping(value = "/removePlant", method = GET)
     public String removePlant() {
-        return "removePlant";
-    }
-
-    // /updatePlant updates the selected plant (post info and user cred- API!)
-    @RequestMapping(value = "/updatePlant", method = GET)
-    public String updatePlant() {
-        return "updatePlant";
+        return "removeplant";
     }
 
     // /logout logs out and returns to /

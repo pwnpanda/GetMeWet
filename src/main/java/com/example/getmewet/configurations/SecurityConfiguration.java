@@ -33,7 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .authorizeRequests().antMatchers("/", "/console/**", "/register").permitAll()
+                .authorizeRequests().antMatchers("/", "/console/**", "/register", "/api/**").permitAll()
                 // TODO enable when not remaking db every time
                 //.antMatchers("/reqister").hasAuthority("ADMIN")
                 .anyRequest().authenticated().and().csrf().disable().formLogin()

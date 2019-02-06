@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
-public class APIController {
+@RequestMapping("/api/status")
+public class APIPlantStatus {
     public static final Logger logger = LoggerFactory.getLogger(APIController.class);
     public int mntNr = LocalDateTime.now().getMonthValue();
     public int dayNr = LocalDateTime.now().getDayOfMonth();
