@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,16 +26,24 @@ public class APIUser {
     public static final Logger logger = LoggerFactory.getLogger(APIUser.class);
 
     @GetMapping(value = "/all")
-    public ResponseEntity<List<String>> listAllUsers(){
+    public ResponseEntity<List<User>> listAllUsers(){
         logger.info("Get all users from API!");
         List<User> users = userService.findAll();
         if (users.isEmpty()){
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
-        List<String> data = new ArrayList<String>();
-        for (User user: users){
-            data.add(user.toString());
-        }
-        return new ResponseEntity<List<String>>(data, HttpStatus.OK);
+        return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<User> getUser(@PathVariable int id){
+        logger.info("Get user with id" + id);
+        User user = userService.findById(id);
+        if (user == null){
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<User>(user, HttpStatus.OK);
+    }
+
+
 }

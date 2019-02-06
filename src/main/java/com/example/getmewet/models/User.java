@@ -3,6 +3,8 @@ package com.example.getmewet.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -42,6 +44,8 @@ public class User {
         return id;
     }
 
+    @JsonIgnore
+    @JsonProperty(value = "password")
     public String getPassword() {
         return password;
     }
@@ -50,6 +54,9 @@ public class User {
         this.password = password;
     }
 
+    // If Role exploration is an issue, disable by uncommenting!
+    //@JsonIgnore
+    //@JsonProperty(value = "roles")
     public Set<Role> getRoles() {
         return roles;
     }
