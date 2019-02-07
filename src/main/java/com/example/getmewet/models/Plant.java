@@ -1,15 +1,10 @@
 package com.example.getmewet.models;
 
-import lombok.Data;
-
 import javax.persistence.*;
 
 @Entity
-@Data
-@Table(name = "plant")
 public class Plant {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     private  final String name;

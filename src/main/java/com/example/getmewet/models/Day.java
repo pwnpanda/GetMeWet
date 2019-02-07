@@ -1,13 +1,9 @@
 package com.example.getmewet.models;
 
-import lombok.Data;
-
 import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Data
-@Table(name = "day")
 public class Day {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

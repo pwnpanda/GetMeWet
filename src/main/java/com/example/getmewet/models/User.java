@@ -3,21 +3,14 @@ package com.example.getmewet.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.Set;
 
 @Entity
-@Data
-@Table(name = "user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "user_id")
     private Integer id;
     private String username;
     @Column(name = "password")
@@ -44,8 +37,6 @@ public class User {
         return id;
     }
 
-    @JsonIgnore
-    @JsonProperty(value = "password")
     public String getPassword() {
         return password;
     }

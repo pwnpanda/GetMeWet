@@ -3,9 +3,12 @@ package com.example.getmewet.controllers;
 import com.example.getmewet.models.User;
 import com.example.getmewet.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -18,8 +21,13 @@ import java.util.concurrent.atomic.AtomicLong;
 @Controller
 @RequestMapping("/")
 public class WebController {
-    private static final String template = "Plant %s!";
     private final AtomicLong counter = new AtomicLong();
+    private static final String url = "http://localhost:9090/api/";
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Autowired
     UserService userService;
@@ -49,6 +57,7 @@ public class WebController {
     @RequestMapping(value = "/register", method = POST)
     public ModelAndView getReg(@Valid User user, BindingResult bindingResult) {
         ModelAndView model = new ModelAndView();
+        // lookup by API TODO
         User us = userService.findByUsername(user.getUsername());
         if (us != null) {
             bindingResult.rejectValue("username", "error.user", "An error occurred when registering a user with this username.");
@@ -56,7 +65,9 @@ public class WebController {
         if (bindingResult.hasErrors()) {
             model.setViewName("reg");
         } else {
-            userService.saveUser(user);
+            RestTemplate tmp = new RestTemplate();
+            User res = tmp.postForObject(url+"register", user, User.class);
+            System.out.println(res);
             model.addObject("successMessage", "User registered!");
             model.addObject("user", new User());
             model.setViewName("reg");
