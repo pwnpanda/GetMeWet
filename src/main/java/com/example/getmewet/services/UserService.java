@@ -5,8 +5,6 @@ import com.example.getmewet.models.User;
 import com.example.getmewet.repositories.RoleRepository;
 import com.example.getmewet.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
