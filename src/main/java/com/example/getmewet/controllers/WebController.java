@@ -4,9 +4,11 @@ import com.example.getmewet.models.User;
 import com.example.getmewet.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,6 +34,7 @@ public class WebController {
     @Autowired
     UserService userService;
 
+
     // / gives base page
     @RequestMapping(method = GET)
     public String getBase() {
@@ -40,8 +43,42 @@ public class WebController {
 
     // /login page
     @RequestMapping(value = "/login", method = GET)
-    public String getLogin() {
-        return "login";
+    public ModelAndView getLogin() {
+        ModelAndView modelAndView = new ModelAndView();
+        User user = new User();
+        modelAndView.addObject("user", user);
+        modelAndView.setViewName("login");
+        return modelAndView;
+    }
+
+
+    // TODO need error handling for 401
+    // /login page
+    @RequestMapping(value = "/login", method = POST)
+    public ModelAndView postLogin(@Valid User user) {
+        ModelAndView model = new ModelAndView();
+
+        // Create post request
+        HttpHeaders head = new HttpHeaders();
+        head.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("username", user.getUsername());
+        map.add("password", user.getPassword());
+        HttpEntity<MultiValueMap<String, String>> req = new HttpEntity<>(map, head);
+        RestTemplate tmp = new RestTemplate();
+        //Do post
+        ResponseEntity<String> res = tmp.postForEntity(url+"login", req, String.class);
+        System.out.println(res);
+        if (res.getStatusCode() == HttpStatus.UNAUTHORIZED){
+            System.out.println("Unauthorized!");
+        }
+        model.addObject("successMessage", "User logged in!");
+        model.addObject("user", new User());
+        model.setViewName("reg");
+
+        //Need to set headers for future auth?
+
+        return model;
     }
 
     @RequestMapping(value="/register", method = GET)
@@ -55,23 +92,19 @@ public class WebController {
 
     // /reg.html post registers user
     @RequestMapping(value = "/register", method = POST)
-    public ModelAndView getReg(@Valid User user, BindingResult bindingResult) {
+    public ModelAndView getReg(@Valid User user) {
+        System.out.println("PW " + user.getPassword());
         ModelAndView model = new ModelAndView();
-        // lookup by API TODO
-        User us = userService.findByUsername(user.getUsername());
-        if (us != null) {
-            bindingResult.rejectValue("username", "error.user", "An error occurred when registering a user with this username.");
-        }
-        if (bindingResult.hasErrors()) {
-            model.setViewName("reg");
-        } else {
-            RestTemplate tmp = new RestTemplate();
-            User res = tmp.postForObject(url+"register", user, User.class);
-            System.out.println(res);
+        RestTemplate tmp = new RestTemplate();
+        User res = tmp.postForObject(url+"register", user, User.class);
+        System.out.println(res);
+        if (res != null){
             model.addObject("successMessage", "User registered!");
-            model.addObject("user", new User());
-            model.setViewName("reg");
+        } else{
+            model.addObject("errorMessage", "User registration failed!");
         }
+        model.addObject("user", new User());
+        model.setViewName("reg");
 
         return model;
     }
