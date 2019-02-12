@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,6 +25,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.net.CookieStore;
 import java.net.HttpCookie;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
@@ -119,18 +121,41 @@ public class WebController {
         return model;
     }
 
-    // /today.html gives today's status
-    @RequestMapping(value = "/today", method = GET)
+    // /User.html gives info about a user
+    @RequestMapping(value = "/user/{id}", method = GET)
+    public String getToday(@PathVariable int id, Model model) {
+        RestTemplate tmp = new RestTemplate();
+        HttpHeaders head = new HttpHeaders();
+        head.add(HttpHeaders.AUTHORIZATION, token);
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", head);
+        ResponseEntity<User> res = tmp.exchange(url+"user/"+id, HttpMethod.GET, entity, User.class);
+        System.out.println(res);
+        User us = res.getBody();
+        System.out.println(us);
+        if (us != null)   model.addAttribute("users", us);
+        return "user";
+    }
+
+    // /Users.html gives info about a user
+    @RequestMapping(value = "/users", method = GET)
     public String getToday(Model model) {
         RestTemplate tmp = new RestTemplate();
         HttpHeaders head = new HttpHeaders();
         head.add(HttpHeaders.AUTHORIZATION, token);
         HttpEntity<String> entity = new HttpEntity<String>("parameters", head);
-        ResponseEntity<User> res = tmp.exchange(url+"user/1", HttpMethod.GET, entity, User.class);
+        ResponseEntity<String> res = tmp.exchange(url+"users", HttpMethod.GET, entity, String.class);
         System.out.println(res);
-        User us = res.getBody();
+        // How to parse list of users? TODO
+        User us = null;
+        //List<User> us = (List<User>) res.getBody();
         System.out.println(us);
         if (us != null)   model.addAttribute("users", us);
+        return "users";
+    }
+
+    // /today shows today's status
+    @RequestMapping(value = "/today", method = GET)
+    public String getToday() {
         return "today";
     }
 
