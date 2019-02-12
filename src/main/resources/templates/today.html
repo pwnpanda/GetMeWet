@@ -7,8 +7,19 @@
     <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
 </head>
 <body>
-    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
-    <h1>TodayPage!</h1>
+<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+<h1>TodayPage!</h1>
+<div th:unless="${#lists.isEmpty(users)}">
+    <table class="table table-striped">
+        <tr>
+            <th>Id</th>
+            <th>Username</th>
+        </tr>
+        <tr th:each="user: ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.username}"></td>
+        </tr>
+    </table>
     <form class="form-horizontal" th:action="@{/logout}" method="post">
         <div class="col-sm-2" style="padding-top: 25px;">
           <span sec:authorize="isAuthenticated()">
@@ -16,5 +27,6 @@
            </span>
         </div>
     </form>
+</div>
 </body>
 </html>

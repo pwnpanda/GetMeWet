@@ -7,17 +7,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import java.net.CookieStore;
+import java.net.HttpCookie;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
@@ -34,12 +40,13 @@ public class WebController {
     @Autowired
     UserService userService;
 
-
     // / gives base page
     @RequestMapping(method = GET)
     public String getBase() {
         return "index";
     }
+
+    private String token;
 
     // /login page
     @RequestMapping(value = "/login", method = GET)
@@ -55,28 +62,31 @@ public class WebController {
     // TODO need error handling for 401
     // /login page
     @RequestMapping(value = "/login", method = POST)
-    public ModelAndView postLogin(@Valid User user) {
+    public ModelAndView postLogin(@Valid User user, HttpServletResponse response) {
+        System.out.println("OK!");
         ModelAndView model = new ModelAndView();
 
         // Create post request
         HttpHeaders head = new HttpHeaders();
-        head.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        head.setContentType(MediaType.APPLICATION_JSON);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("username", user.getUsername());
         map.add("password", user.getPassword());
         HttpEntity<MultiValueMap<String, String>> req = new HttpEntity<>(map, head);
         RestTemplate tmp = new RestTemplate();
         //Do post
-        ResponseEntity<String> res = tmp.postForEntity(url+"login", req, String.class);
+        //ResponseEntity<String> res = tmp.postForEntity(url+"login", req, String.class);
+        ResponseEntity<String> res = tmp.postForEntity("http://localhost:9090/login", user, String.class);
         System.out.println(res);
-        if (res.getStatusCode() == HttpStatus.UNAUTHORIZED){
-            System.out.println("Unauthorized!");
-        }
+
+        HttpHeaders headers = res.getHeaders();
+        token = headers.getFirst(headers.AUTHORIZATION);
+
         model.addObject("successMessage", "User logged in!");
         model.addObject("user", new User());
-        model.setViewName("reg");
-
-        //Need to set headers for future auth?
+        model.setViewName("index");
+        System.out.println(token);
+        response.setHeader(HttpHeaders.AUTHORIZATION, token);
 
         return model;
     }
@@ -111,7 +121,16 @@ public class WebController {
 
     // /today.html gives today's status
     @RequestMapping(value = "/today", method = GET)
-    public String getToday() {
+    public String getToday(Model model) {
+        RestTemplate tmp = new RestTemplate();
+        HttpHeaders head = new HttpHeaders();
+        head.add(HttpHeaders.AUTHORIZATION, token);
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", head);
+        ResponseEntity<User> res = tmp.exchange(url+"user/1", HttpMethod.GET, entity, User.class);
+        System.out.println(res);
+        User us = res.getBody();
+        System.out.println(us);
+        if (us != null)   model.addAttribute("users", us);
         return "today";
     }
 
@@ -153,8 +172,9 @@ public class WebController {
     }
 
     // /logout logs out and returns to /
-    @RequestMapping(value = "/logout", method = GET)
+    @RequestMapping(value = "/logout", method = POST)
     public String logout() {
+        token = null;
         return "logout";
     }
 
