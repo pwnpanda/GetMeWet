@@ -65,7 +65,6 @@ public class WebController {
     // /login page
     @RequestMapping(value = "/login", method = POST)
     public ModelAndView postLogin(@Valid User user, HttpServletResponse response) {
-        System.out.println("OK!");
         ModelAndView model = new ModelAndView();
 
         // Create post request
@@ -81,10 +80,17 @@ public class WebController {
         ResponseEntity<String> res = tmp.postForEntity("http://localhost:9090/login", user, String.class);
         System.out.println(res);
 
+        if (res.getStatusCode() != HttpStatus.OK){
+            model.addObject("message", "Error! Please try again!");
+            model.addObject("user", new User());
+            model.setViewName("login");
+            return model;
+        }
+
         HttpHeaders headers = res.getHeaders();
         token = headers.getFirst(headers.AUTHORIZATION);
 
-        model.addObject("successMessage", "User logged in!");
+        model.addObject("message", "User logged in!");
         model.addObject("user", new User());
         model.setViewName("index");
         System.out.println(token);
@@ -108,12 +114,13 @@ public class WebController {
         System.out.println("PW " + user.getPassword());
         ModelAndView model = new ModelAndView();
         RestTemplate tmp = new RestTemplate();
+        System.out.println(url+"/user/register");
         User res = tmp.postForObject(url+"/user/register", user, User.class);
         System.out.println(res);
         if (res != null){
-            model.addObject("successMessage", "User registered!");
+            model.addObject("message", "User registered!");
         } else{
-            model.addObject("errorMessage", "User registration failed!");
+            model.addObject("message", "User registration failed!");
         }
         model.addObject("user", new User());
         model.setViewName("reg");
