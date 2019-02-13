@@ -4,6 +4,7 @@ import com.example.getmewet.models.Day;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,7 +31,7 @@ public class DayService {
     }
 
     public Day getToday(){
-        Date today = new Date(System.currentTimeMillis());
+        LocalDate today = LocalDate.now();
         for (Day day: days){
             if (day.getDate() == today) {
                 return day;

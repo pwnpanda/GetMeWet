@@ -1,30 +1,29 @@
 package com.example.getmewet.controllers;
 
+import com.example.getmewet.models.Status;
 import com.example.getmewet.models.User;
 import com.example.getmewet.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-import java.net.CookieStore;
-import java.net.HttpCookie;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -49,6 +48,12 @@ public class WebController {
     }
 
     private String token;
+
+    private HttpEntity<String> createAuth() {
+        HttpHeaders auth = new HttpHeaders();
+        auth.add(HttpHeaders.AUTHORIZATION, token);
+        return new HttpEntity<String>("parameters", auth);
+    }
 
     // /login page
     @RequestMapping(value = "/login", method = GET)
@@ -76,11 +81,10 @@ public class WebController {
         HttpEntity<MultiValueMap<String, String>> req = new HttpEntity<>(map, head);
         RestTemplate tmp = new RestTemplate();
         //Do post
-        //ResponseEntity<String> res = tmp.postForEntity(url+"login", req, String.class);
         ResponseEntity<String> res = tmp.postForEntity("http://localhost:9090/login", user, String.class);
         System.out.println(res);
 
-        if (res.getStatusCode() != HttpStatus.OK){
+        if (res.getStatusCode() != HttpStatus.OK) {
             model.addObject("message", "Error! Please try again!");
             model.addObject("user", new User());
             model.setViewName("login");
@@ -90,17 +94,15 @@ public class WebController {
         HttpHeaders headers = res.getHeaders();
         token = headers.getFirst(headers.AUTHORIZATION);
 
-        model.addObject("message", "User logged in!");
-        model.addObject("user", new User());
-        model.setViewName("index");
+        model.setViewName("today");
         System.out.println(token);
         response.setHeader(HttpHeaders.AUTHORIZATION, token);
 
-        return model;
+        return getToday();
     }
 
-    @RequestMapping(value="/register", method = GET)
-    public ModelAndView registration(){
+    @RequestMapping(value = "/register", method = GET)
+    public ModelAndView registration() {
         ModelAndView modelAndView = new ModelAndView();
         User user = new User();
         modelAndView.addObject("user", user);
@@ -112,58 +114,67 @@ public class WebController {
     @RequestMapping(value = "/register", method = POST)
     public ModelAndView getReg(@Valid User user) {
         System.out.println("PW " + user.getPassword());
-        ModelAndView model = new ModelAndView();
         RestTemplate tmp = new RestTemplate();
-        System.out.println(url+"/user/register");
-        User res = tmp.postForObject(url+"/user/register", user, User.class);
+        User res = tmp.postForObject(url + "/user/register", user, User.class);
+
+        ModelAndView model = new ModelAndView();
+
         System.out.println(res);
-        if (res != null){
-            model.addObject("message", "User registered!");
-        } else{
+        if (res == null) {
             model.addObject("message", "User registration failed!");
+            model.addObject("user", new User());
+            model.setViewName("reg");
+            return model;
         }
         model.addObject("user", new User());
-        model.setViewName("reg");
-
+        model.setViewName("login");
         return model;
     }
 
     // /User.html gives info about a user
     @RequestMapping(value = "/user/{id}", method = GET)
-    public String getToday(@PathVariable int id, Model model) {
+    public String getUser(@PathVariable int id, Model model) {
         RestTemplate tmp = new RestTemplate();
-        HttpHeaders head = new HttpHeaders();
-        head.add(HttpHeaders.AUTHORIZATION, token);
-        HttpEntity<String> entity = new HttpEntity<String>("parameters", head);
-        ResponseEntity<User> res = tmp.exchange(url+"user/"+id, HttpMethod.GET, entity, User.class);
+        HttpEntity<String> ent = createAuth();
+        ResponseEntity<User> res = tmp.exchange(url + "/user/" + id, HttpMethod.GET, ent, User.class);
         System.out.println(res);
         User us = res.getBody();
         System.out.println(us);
-        if (us != null)   model.addAttribute("users", us);
+        if (us != null) model.addAttribute("users", us);
         return "user";
     }
 
     // /Users.html gives info about a user
     @RequestMapping(value = "/users", method = GET)
-    public String getToday(Model model) {
+    public String getUsers(Model model) {
         RestTemplate tmp = new RestTemplate();
-        HttpHeaders head = new HttpHeaders();
-        head.add(HttpHeaders.AUTHORIZATION, token);
-        HttpEntity<String> entity = new HttpEntity<String>("parameters", head);
-        ResponseEntity<String> res = tmp.exchange(url+"users", HttpMethod.GET, entity, String.class);
+        HttpEntity<String> ent = createAuth();
+        ResponseEntity<String> res = tmp.exchange(url + "users", HttpMethod.GET, ent, String.class);
         System.out.println(res);
         // How to parse list of users? TODO
         User us = null;
         //List<User> us = (List<User>) res.getBody();
         System.out.println(us);
-        if (us != null)   model.addAttribute("users", us);
+        if (us != null) model.addAttribute("users", us);
         return "users";
     }
 
     // /today shows today's status
     @RequestMapping(value = "/today", method = GET)
-    public String getToday() {
-        return "today";
+    public ModelAndView getToday() {
+        ModelAndView model = new ModelAndView();
+        RestTemplate tmp = new RestTemplate();
+        HttpEntity<String> ent = createAuth();
+        LocalDate date = LocalDate.now();
+        System.out.println(date);
+        String req = url + "/status/day/" + date.toString();
+        //System.out.println(req);
+        ResponseEntity<List<Status>> statuses = tmp.exchange(req, HttpMethod.GET, ent, new ParameterizedTypeReference<List<Status>>() {
+        });
+
+        model.addObject("statuses", statuses);
+        model.setViewName("today");
+        return model;
     }
 
     // /update allows setting today's status (switches for yes/no and save button)

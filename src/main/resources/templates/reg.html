@@ -3,17 +3,11 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Registration Form</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/registration.css}" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <<!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
 </head>
 <body>
-<form th:action="@{/login}" method="get">
-    <button class="btn btn-md btn-warning btn-block" type="Submit">Login Page</button>
-</form>
-
 <div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <form autocomplete="off" action="#" th:action="@{/register}"
@@ -44,7 +38,7 @@
                     </div>
                 </div>
 
-                <span th:utext="${message}"></span>
+                <span th:utext="${message}" style="color:red"></span>
 
 
             </form>
