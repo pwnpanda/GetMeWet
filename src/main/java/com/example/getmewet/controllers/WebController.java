@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequestMapping("/")
 public class WebController {
     private final AtomicLong counter = new AtomicLong();
-    private static final String url = "http://localhost:9090/api/";
+    private static final String url = "http://localhost:9090/api";
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -108,7 +108,7 @@ public class WebController {
         System.out.println("PW " + user.getPassword());
         ModelAndView model = new ModelAndView();
         RestTemplate tmp = new RestTemplate();
-        User res = tmp.postForObject(url+"register", user, User.class);
+        User res = tmp.postForObject(url+"/user/register", user, User.class);
         System.out.println(res);
         if (res != null){
             model.addObject("successMessage", "User registered!");
