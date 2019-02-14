@@ -71,14 +71,6 @@ public class WebController {
     @RequestMapping(value = "/login", method = POST)
     public ModelAndView postLogin(@Valid User user, HttpServletResponse response) {
         ModelAndView model = new ModelAndView();
-
-        // Create post request
-        HttpHeaders head = new HttpHeaders();
-        head.setContentType(MediaType.APPLICATION_JSON);
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("username", user.getUsername());
-        map.add("password", user.getPassword());
-        HttpEntity<MultiValueMap<String, String>> req = new HttpEntity<>(map, head);
         RestTemplate tmp = new RestTemplate();
         //Do post
         ResponseEntity<String> res = tmp.postForEntity("http://localhost:9090/login", user, String.class);
